@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="cn-ZH">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>信息管理系统</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <h1 class="title">用户信息管理</h1>
+
+    <div>
+      <a href="/addUserInfo">添加新用户</a>
+    </div><br />
+
+    <table class="table">
+      <thead>
+        <tr>
+          <td><div>姓名</div></td>
+          <td><div>性别</div></td>
+          <td><div>年龄</div></td>
+          <td><div>操作</div></td>
+        </tr>
+      </thead>
+      <tbody>
+        {{each userList}}
+        <tr>
+          <td><div>{{ $value.name }}</div></td>
+          <td><div>{{ $value.sex }}</div></td>
+          <td><div>{{ $value.age }}</div></td>
+          <td><div>
+            <a href="/updateUserInfo?id={{ $value.id }}">编辑</a>
+             | 
+            <a href="javascript:deleteUser('{{ $value.id }}', '{{ $value.name }}')">删除</a></div></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    {{each dbList}}
+    <div>{{ $value.name }} --- {{ $value.sex }} --- {{ $value.age }}</div>
+    {{/each}}
+
+    <script>
+      function deleteUser(id, name){
+        let flg = confirm(`确定要删除用户"${name}"吗？`);
+        if(flg){
+          location.replace(`/deleteUserInfo?id=${id}`);
+        }
+      }
+    </script>
+</body>
+</html>
