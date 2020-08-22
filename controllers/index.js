@@ -52,7 +52,7 @@ const fn_getUserInfo = async (ctx, next) => {
  */
 const fn_getThirdPartyApi = async (ctx, next) => {
   let query = ctx.request.query;
-  let pageNum = query.page || 1;
+  let page = query.page || 1;
   let count = query.count || 10;
   let type = query.type || 'all';     // 可选参数：all/video/image/gif/text
 
@@ -61,7 +61,7 @@ const fn_getThirdPartyApi = async (ctx, next) => {
     url: 'https://api.apiopen.top/getJoke',
     method: 'post',
     qs: {
-      page: pageNum,
+      page: page,
       count: count,
       type: type
     }
@@ -72,7 +72,7 @@ const fn_getThirdPartyApi = async (ctx, next) => {
   //   url: 'https://api.apiopen.top/getJoke',
   //   method: 'post',
   //   form: {
-  //     page: pageNum,
+  //     page: page,
   //     count: count,
   //     type: type
   //   }
@@ -81,6 +81,21 @@ const fn_getThirdPartyApi = async (ctx, next) => {
   // ctx.render('duanzi', {
   //   res
   // });
+}
+
+/**
+ * 获取第三方图片接口
+ * 地址：https://api.apiopen.top/getImages
+ * 参数：page：页码(传0或者不传会随机推荐)，count：每页返回数量
+ */
+const fn_getImgages = async (ctx, next) => {
+  let res = await koaRequest({
+    url: `https://api.apiopen.top/getImages`
+  });
+  ctx.render('images', {
+    imagesList: JSON.parse(res.body).result
+  })
+  // ctx.response.body = res.body;
 }
 
 /**
@@ -186,6 +201,7 @@ module.exports = {
   'GET /signin': fn_signin,
   'GET /getUserInfo': fn_getUserInfo,
   'GET /duanzi': fn_getThirdPartyApi,
+  'GET /images': fn_getImgages,
   'GET /addUserInfo': show_addUserInfo,
   'POST /doAddUserInfo': fn_addUserInfo,
   'GET /updateUserInfo': show_updataUserInfo,
