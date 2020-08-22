@@ -1,4 +1,5 @@
 const DB = require('../module/db');
+const koaRequest = require('koa2-request');
 
 /**
  * 首页信息
@@ -43,6 +44,43 @@ const fn_getUserInfo = async (ctx, next) => {
   let dbData = await DB.find('user');
   ctx.response.type = 'application/json';
   ctx.response.body = dbData;
+}
+
+/**
+ * 获取第三方接口信息(获取的是列表，详情接口如下)
+ * 详情接口：https://api.apiopen.top/getSingleJoke?sid=
+ */
+const fn_getThirdPartyApi = async (ctx, next) => {
+  let query = ctx.request.query;
+  let pageNum = query.page || 1;
+  let count = query.count || 10;
+  let type = query.type || 'all';     // 可选参数：all/video/image/gif/text
+
+  // GET 方式
+  let res = await koaRequest({
+    url: 'https://api.apiopen.top/getJoke',
+    method: 'post',
+    qs: {
+      page: pageNum,
+      count: count,
+      type: type
+    }
+  });
+
+  // POST 方式
+  // let res = await koaRequest({
+  //   url: 'https://api.apiopen.top/getJoke',
+  //   method: 'post',
+  //   form: {
+  //     page: pageNum,
+  //     count: count,
+  //     type: type
+  //   }
+  // });
+  ctx.response.body = res.body;
+  // ctx.render('duanzi', {
+  //   res
+  // });
 }
 
 /**
@@ -147,6 +185,7 @@ module.exports = {
   'GET /': fn_index,
   'GET /signin': fn_signin,
   'GET /getUserInfo': fn_getUserInfo,
+  'GET /duanzi': fn_getThirdPartyApi,
   'GET /addUserInfo': show_addUserInfo,
   'POST /doAddUserInfo': fn_addUserInfo,
   'GET /updateUserInfo': show_updataUserInfo,
